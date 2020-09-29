@@ -1,0 +1,13 @@
+{
+	"name": "Source_Http_NOAA_Stations",
+	"properties": {
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://www.ncdc.noaa.gov",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous",
+			"username": ""
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}

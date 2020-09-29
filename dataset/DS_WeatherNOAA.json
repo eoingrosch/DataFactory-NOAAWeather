@@ -1,0 +1,66 @@
+{
+	"name": "DS_WeatherNOAA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Source_Http_NOAA_GSOM",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"weatherStationID": {
+				"type": "String"
+			},
+			"startDate": {
+				"type": "String"
+			},
+			"endDate": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "weather"
+		},
+		"type": "HttpFile",
+		"structure": [
+			{
+				"name": "date",
+				"type": "String"
+			},
+			{
+				"name": "datatype",
+				"type": "String"
+			},
+			{
+				"name": "station",
+				"type": "String"
+			},
+			{
+				"name": "attributes",
+				"type": "String"
+			},
+			{
+				"name": "value",
+				"type": "Decimal"
+			}
+		],
+		"typeProperties": {
+			"format": {
+				"type": "JsonFormat",
+				"jsonNodeReference": "$.['results']",
+				"jsonPathDefinition": {
+					"date": "['date']",
+					"datatype": "['datatype']",
+					"station": "['station']",
+					"attributes": "['attributes']",
+					"value": "['value']"
+				}
+			},
+			"relativeUrl": {
+				"value": "/cdo-web/api/v2/data?datasetid=GSOM&units=standard&limit=1000&datatypeid=AWND&datatypeid=CDSD&datatypeid=CLDD&datatypeid=DP01&datatypeid=DP10&datatypeid=DSND&datatypeid=DSNW&datatypeid=DT00&datatypeid=DT32&datatypeid=DX32&datatypeid=DX70&datatypeid=DX90&datatypeid=EMNT&datatypeid=EMSD&datatypeid=EMSN&datatypeid=EMXP&datatypeid=EMXT&datatypeid=HDSD&datatypeid=HTDD&datatypeid=PRCP&datatypeid=PSUN&datatypeid=SNOW&datatypeid=TAVG&datatypeid=TMAX&datatypeid=TMIN&datatypeid=TSUN&datatypeid=WDF2&datatypeid=WDF5&datatypeid=WDFG&datatypeid=WSF2&datatypeid=WSF5&datatypeid=WSFG&startdate=@{dataset().startDate}&enddate=@{dataset().endDate}&stationid=@{dataset().weatherStationID}",
+				"type": "Expression"
+			},
+			"requestMethod": "Get",
+			"additionalHeaders": "token: fmUXkeaZYtDUCdwRbHeeCtmBhtNHclZr"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

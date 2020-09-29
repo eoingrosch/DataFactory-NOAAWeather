@@ -1,0 +1,88 @@
+{
+	"name": "PL_Weather_IterateAndCopyData",
+	"properties": {
+		"activities": [
+			{
+				"name": "IterateWeatherStations",
+				"type": "ForEach",
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.weatherStationList",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "CopyWeatherData",
+							"type": "Copy",
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "concat('/cdo-web/api/v2/data?datasetid=GSOM&datatypeid=DP01&startdate=2018-01-01&enddate=2018-01-01&stationid=',@'<weatherStationID>')"
+								},
+								{
+									"name": "Destination",
+									"value": "[stageopd].[WeatherNoaaGsom]"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "HttpSource",
+									"httpRequestTimeout": "00:01:40"
+								},
+								"sink": {
+									"type": "SqlSink",
+									"writeBatchSize": 10000
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": 0,
+								"translator": {
+									"type": "TabularTranslator",
+									"columnMappings": {
+										"date": "date",
+										"datatype": "datatype",
+										"station": "station",
+										"attributes": "attributes",
+										"value": "value"
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_WeatherNOAA",
+									"type": "DatasetReference",
+									"parameters": {
+										"weatherStationID": "@{item().WeatherStationID}",
+										"startDate": "@{item().StartDate}",
+										"endDate": "@{item().EndDate}"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "stageopd_WeatherNoaaGsom_o_jbj",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"weatherStationList": {
+				"type": "Object"
+			}
+		},
+		"folder": {
+			"name": "NOAA Weather"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,56 @@
+{
+	"name": "PL_Weather_GetParameterListAndTriggerCopyData",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookupWeatherStationList",
+				"type": "Lookup",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderQuery": "SELECT\tWeatherStationID\n\t\t,StartDate\n\t\t,EndDate\nFROM\t[opd].[vwWeatherNoaaGsomParameters]"
+					},
+					"dataset": {
+						"referenceName": "stageopd_WeatherNoaaGsomStation_o_fbx",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "TriggerCopy",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "LookupWeatherStationList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Weather_IterateAndCopyData",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"weatherStationList": {
+							"value": "@activity('LookupWeatherStationList').output.value",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "NOAA Weather"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

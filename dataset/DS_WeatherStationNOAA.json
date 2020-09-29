@@ -1,0 +1,68 @@
+{
+	"name": "DS_WeatherStationNOAA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Source_Http_NOAA_Stations",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"strOffset": {
+				"type": "String",
+				"defaultValue": "2001"
+			}
+		},
+		"folder": {
+			"name": "weather"
+		},
+		"type": "HttpFile",
+		"structure": [
+			{
+				"name": "mindate",
+				"type": "String"
+			},
+			{
+				"name": "maxdate",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "Double"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "datacoverage",
+				"type": "Double"
+			},
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "Double"
+			}
+		],
+		"typeProperties": {
+			"format": {
+				"type": "JsonFormat",
+				"jsonNodeReference": "$.['results']",
+				"jsonPathDefinition": {
+					"mindate": "['mindate']",
+					"maxdate": "['maxdate']",
+					"latitude": "['latitude']",
+					"name": "['name']",
+					"datacoverage": "['datacoverage']",
+					"id": "['id']",
+					"longitude": "['longitude']"
+				}
+			},
+			"relativeUrl": "/cdo-web/api/v2/stations?locationid=FIPS:US&datasetid=GSOM&datacategoryid=COMP&datacategoryid=PRCP&datacategoryid=TEMP&startdate=2018-04-01&limit=1000&offset=4001",
+			"requestMethod": "Get",
+			"additionalHeaders": "token: fmUXkeaZYtDUCdwRbHeeCtmBhtNHclZr"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
